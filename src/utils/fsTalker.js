@@ -26,8 +26,24 @@ async function writeNewTalker(newTalker) {
     return newTalkerWithId;
 }
 
+async function updateTalkerById(id, updatedTalker) {
+    const oldTalkers = await readTalkersData();
+    const newTalker = { id, ...updatedTalker };
+  
+    const updatedTalkers = oldTalkers.reduce((talker, currentTalker) => {
+      if (currentTalker.id === id) return [...talker, newTalker];
+      return [...talker, currentTalker];
+    }, []);
+  
+    const updatedData = JSON.stringify(updatedTalkers);
+    await fs.writeFile(path.resolve(TALKER_PATH), updatedData);
+  
+    return newTalker;
+  }
+
 module.exports = {
     readTalkersData,
     readTalkersDataById,
     writeNewTalker,
+    updateTalkerById,
 };

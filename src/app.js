@@ -14,32 +14,30 @@ const {
     readTalkersData,
     readTalkersDataById,
     writeNewTalker,
+    updateTalkerById,
   } = require('./utils/fsTalker');
   
-  const app = express();
+const app = express();
   
-  app.use(express.json());
+app.use(express.json());
+app.get('/talker', async (req, res) => {
+  const talkers = await readTalkersData();
+  return res.status(200).json(talkers);
+});
+app.get('/talker/:id', async (req, res) => {
+  const { id } = req.params;
+  const talker = await readTalkersDataById(id);
+  if (talker.length > 0) {
+      return res.status(200).json(talker[0]);
+  } 
+  return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+});
+app.post('/login', validateLoginData, async (req, res) => {
+  const token = crypto.randomBytes(8).toString('hex');
+  return res.status(200).json({ token });
+});
 
-  app.get('/talker', async (req, res) => {
-    const talkers = await readTalkersData();
-    return res.status(200).json(talkers);
-  });
-
-  app.get('/talker/:id', async (req, res) => {
-    const { id } = req.params;
-    const talker = await readTalkersDataById(id);
-    if (talker.length > 0) {
-        return res.status(200).json(talker[0]);
-    } 
-    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
-  });
-
-  app.post('/login', validateLoginData, async (req, res) => {
-    const token = crypto.randomBytes(8).toString('hex');
-    return res.status(200).json({ token });
-  });
-
-  app.post('/talker', 
+app.post('/talker', 
   auth,
   validateName, 
   validateAge, 
@@ -52,6 +50,22 @@ const {
     const newTalker = await writeNewTalker(newTalkerData);
   
     return res.status(201).json(newTalker);
-  });
+});
+
+app.put('/talker/:id', 
+  auth,
+  validateName, 
+  validateAge, 
+  validateTalk, 
+  validateWatchAt,
+  validateRate, 
+  async (req, res) => {
+    const { id } = req.params;
+    const newTalkerData = req.body;
+  
+    const editedTalker = await updateTalkerById(Number(id), newTalkerData); 
+  
+    return res.status(200).json(editedTalker);
+});
 
   module.exports = app;
