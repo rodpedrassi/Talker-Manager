@@ -21,10 +21,21 @@ const {
 const app = express();
   
 app.use(express.json());
+
+app.get('/talker/search', auth, async (req, res) => {
+    const { q } = req.query;
+    console.log(q);
+    
+    const allTalkers = await readTalkersData();
+    const filteredTalkers = allTalkers.filter((e) => e.name.includes(q));
+    return res.status(200).json(filteredTalkers);
+  });
+
 app.get('/talker', async (req, res) => {
   const talkers = await readTalkersData();
   return res.status(200).json(talkers);
 });
+
 app.get('/talker/:id', async (req, res) => {
   const { id } = req.params;
   const talker = await readTalkersDataById(id);
@@ -33,6 +44,7 @@ app.get('/talker/:id', async (req, res) => {
   } 
   return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
 });
+
 app.post('/login', validateLoginData, async (req, res) => {
   const token = crypto.randomBytes(8).toString('hex');
   return res.status(200).json({ token });
