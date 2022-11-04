@@ -15,6 +15,7 @@ const {
     readTalkersDataById,
     writeNewTalker,
     updateTalkerById,
+    deleteTalker,
   } = require('./utils/fsTalker');
   
 const app = express();
@@ -66,6 +67,12 @@ app.put('/talker/:id',
     const editedTalker = await updateTalkerById(Number(id), newTalkerData); 
   
     return res.status(200).json(editedTalker);
+});
+
+app.delete('/talker/:id', auth, async (req, res) => {
+    const { id } = req.params;
+    deleteTalker(Number(id));
+    return res.status(204).end();
 });
 
   module.exports = app;

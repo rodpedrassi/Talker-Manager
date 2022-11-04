@@ -41,9 +41,18 @@ async function updateTalkerById(id, updatedTalker) {
     return newTalker;
   }
 
+  async function deleteTalker(id) {
+    const oldTalkers = await readTalkersData();
+    const updatedTalkers = oldTalkers.filter((mission) => mission.id !== id);
+    const updatedData = JSON.stringify(updatedTalkers);
+  
+    await fs.writeFile(path.resolve(TALKER_PATH), updatedData);
+  }
+
 module.exports = {
     readTalkersData,
     readTalkersDataById,
     writeNewTalker,
     updateTalkerById,
+    deleteTalker,
 };
