@@ -10,6 +10,13 @@ async function readTalkersData() {
   return talkers;
 }
 
+async function readTalkersDataById(id) {
+  const allTalkers = await readTalkersData();
+  const talker = allTalkers.filter((e) => Number(id) === Number(e.id));
+  return talker;
+}
+
 module.exports = {
     readTalkersData,
+    readTalkersDataById,
 };
