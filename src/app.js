@@ -1,5 +1,7 @@
 const express = require('express');
 
+const crypto = require('crypto');
+
 const {
     readTalkersData,
     readTalkersDataById,
@@ -21,6 +23,11 @@ const {
         return res.status(200).json(talker[0]);
     } 
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
-});
+  });
+
+  app.post('/login', async (req, res) => {
+    const token = crypto.randomBytes(8).toString('hex');
+    return res.status(200).json({ token });
+  });
 
   module.exports = app;
