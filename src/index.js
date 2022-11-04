@@ -1,7 +1,9 @@
-const express = require('express');
+// const express = require('express');
 const bodyParser = require('body-parser');
 
-const app = express();
+// const app = express();
+const app = require('./app');
+
 app.use(bodyParser.json());
 
 const HTTP_OK_STATUS = 200;
@@ -13,6 +15,5 @@ app.get('/', (_request, response) => {
 });
 
 app.listen(PORT, () => {
-  console.log('Onlineee');
-  console.log('oxe');
+  console.log('Online');
 });
